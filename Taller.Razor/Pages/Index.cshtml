@@ -1,0 +1,130 @@
+﻿@page
+@model Taller.Razor.Pages.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+ 
+<form method="post">
+    @Html.AntiForgeryToken()
+
+    <p>
+        Guess the price and win a discount!
+    </p>
+
+    <input id="price" asp-for="Price" class="form-control" />
+
+    <input type="submit" />
+</form>
+
+
+<table class="table">
+
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Cars[0].Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cars[0].Make)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cars[0].Model)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cars[0].Year)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cars[0].Doors)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cars[0].Color)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cars[0].Price)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @for (int i = 0; i < Model.Cars.Count; i++)
+        {
+            var item = Model.Cars[i];
+
+            <tr class="@(item.GuessedPrice ? "row-colored" : string.Empty)">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Make)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Model)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Year)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Doors)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Color)
+
+                    @item.GuessedPrice
+                </td>
+                <td>
+                    @if (item.Price.HasValue)
+                    {
+                        <span>$</span> @Html.DisplayFor(modelItem => item.Price)
+                    }
+                </td>
+            </tr>
+        }
+        
+           
+            
+           
+
+        
+
+        
+    </tbody>
+</table>
+
+
+    <style>
+        .row-colored {
+            background-color: green;
+        }
+    </style>
+
+
+@section Scripts{
+    <script>
+        function sendData() {
+
+            var token = '@Html.AntiForgeryToken()';
+
+            var Price = $("#price").val();
+            $.ajax({
+                type: "POST",
+                url: "Index",
+                data: { Price: Price },
+                headers: {
+                    RequestVerificationToken: $(token).val()
+                },
+                success: function (result) {
+                    @*alert("success");*@
+                },
+                error: function (ex) {
+                    console.log(ex);
+                    alert(ex);
+                }
+            })
+        }
+    </script>
+}
